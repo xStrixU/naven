@@ -1,0 +1,7 @@
+{
+  "name": "@naven/root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
