@@ -8,6 +8,10 @@ export default class _Document extends Document {
     return (
       <Html>
         <Head>
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto&display=optional"
+          />
           <link rel="shortcut icon" href="/favicons/favicon.ico" />
         </Head>
         <body>
