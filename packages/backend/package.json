@@ -1,0 +1,29 @@
+{
+  "name": "@naven/backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail 'yarn dev:start:db' 'yarn wait-on tcp:5432' 'yarn dev:start:app'",
+    "dev:start:app": "nodemon -r tsconfig-paths/register ./src/index.ts",
+    "dev:start:db": "docker compose up db",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@fastify/env": "^4.1.0",
+    "@fastify/type-provider-typebox": "^2.3.0",
+    "@sinclair/typebox": "^0.24.28",
+    "fastify": "^4.5.2",
+    "fastify-plugin": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.8",
+    "@types/node": "^18.7.13",
+    "concurrently": "^7.3.0",
+    "jest": "^28.1.3",
+    "nodemon": "^2.0.19",
+    "ts-jest": "^28.0.8",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.1.0",
+    "wait-on": "^6.0.1"
+  }
+}
