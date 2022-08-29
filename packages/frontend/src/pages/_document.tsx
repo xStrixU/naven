@@ -9,6 +9,27 @@ export default class _Document extends Document {
       <Html>
         <Head>
           <link
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+            href="/fonts/GreycliffCF/GreycliffCF-Regular.woff2"
+          />
+          <link
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+            href="/fonts/GreycliffCF/GreycliffCF-Medium.woff2"
+          />
+          <link
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+            href="/fonts/GreycliffCF/GreycliffCF-Bold.woff2"
+          />
+          <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto&display=optional"
           />

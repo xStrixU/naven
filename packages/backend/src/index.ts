@@ -1,7 +1,17 @@
+import ajvErrors from 'ajv-errors';
+
 import { createServer } from './server';
 
 const start = async () => {
-  const fastify = await createServer({ logger: true });
+  const fastify = await createServer({
+    ajv: {
+      customOptions: {
+        allErrors: true,
+      },
+      plugins: [ajvErrors],
+    },
+    logger: true,
+  });
 
   try {
     await fastify.listen({
