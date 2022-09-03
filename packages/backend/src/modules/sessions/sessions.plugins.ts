@@ -3,14 +3,9 @@ import fp from 'fastify-plugin';
 
 import { SESSION_COOKIE_NAME } from './sessions.constans';
 
-import type { AppUser } from '../users/users.types';
 import type { FastifyPluginAsync } from 'fastify';
 
 declare module 'fastify' {
-  interface FastifyRequest {
-    user: AppUser;
-  }
-
   interface Session {
     userId: number;
   }

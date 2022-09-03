@@ -1,3 +1,5 @@
-const IndexPage = () => <strong>Index Page</strong>;
+import { IndexPageContent } from '@/components/contents/IndexPageContent/IndexPageContent';
+
+const IndexPage = () => <IndexPageContent />;
 
 export default IndexPage;

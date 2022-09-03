@@ -8,12 +8,36 @@ generator client {
 }
 
 model User {
-  id          Int     @id() @default(autoincrement())
-  username    String  @unique
+  id          Int               @id() @default(autoincrement())
+  username    String            @unique
   displayName String
   biography   String?
-  email       String  @unique
+  email       String            @unique
   password    String
+  workspaces  WorkspacesUsers[]
 
-  @@map("users")
+  @@map("user")
+}
+
+model Workspace {
+  id         String            @id @default(uuid())
+  name       String
+  users      WorkspacesUsers[]
+
+  @@map("workspace")
+}
+
+model WorkspacesUsers {
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int       @map("user_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspaceId String    @map("workspace_id")
+  role        Role
+
+  @@id([userId, workspaceId])
+  @@map("workspaces_users")
+}
+
+enum Role {
+  OWNER
 }

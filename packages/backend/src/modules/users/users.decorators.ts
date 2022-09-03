@@ -4,30 +4,18 @@ import fp from 'fastify-plugin';
 import { PROFILE_PICTURES_BASE_PATH } from './users.constants';
 
 import type { AppUser } from './users.types';
-import type { PrismaClient, User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import type { FastifyInstance, FastifyPluginCallback } from 'fastify';
 
 declare module 'fastify' {
   interface FastifyInstance {
-    getUserBy: ReturnType<typeof getUserBy>;
     createAppUser: ReturnType<typeof createAppUser>;
     hashPassword: ReturnType<typeof hashPassword>;
   }
 }
-
-const getUserBy =
-  (prisma: PrismaClient) =>
-  async (data: { [P in keyof AppUser]: AppUser[P] }) => {
-    return await prisma.user.findFirst({
-      where: {
-        ...data,
-      },
-    });
-  };
-
 const createAppUser =
   (fastify: FastifyInstance) =>
-  (user: User): AppUser => {
+  <T extends User>(user: T): AppUser<T> => {
     const {
       config: { SERVER_BASE_URL },
     } = fastify;
@@ -50,7 +38,6 @@ const hashPassword = (fastify: FastifyInstance) => (password: string) => {
 };
 
 const usersDecorators: FastifyPluginCallback = (fastify, _options, done) => {
-  fastify.decorate('getUserBy', getUserBy);
   fastify.decorate('createAppUser', createAppUser(fastify));
   fastify.decorate('hashPassword', hashPassword(fastify));
 

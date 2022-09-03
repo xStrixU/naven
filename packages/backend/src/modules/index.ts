@@ -10,6 +10,10 @@ const modules: FastifyPluginAsync = async fastify => {
   await fastify.register(import('./sessions/sessions.routes'), {
     prefix: '/sessions',
   });
+
+  await fastify.register(import('./workspaces/workspaces.routes'), {
+    prefix: '/workspaces',
+  });
 };
 
 export default modules;
