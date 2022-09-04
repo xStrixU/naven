@@ -1,14 +1,16 @@
 import bcrypt from 'bcrypt';
 
+import { mapUserToAppUser } from './users.mapper';
 import {
   createProfilePicture,
   getProfilePicutrePath,
+  hashPassword,
   isProfilePictureMimeTypeAllowed,
 } from './users.utils';
 
+import { saveFile } from '@/lib/stream';
 import { PrismaErrorCode } from '@/plugins/prisma/prisma.types';
 import { isPrismaError } from '@/plugins/prisma/prisma.utils';
-import { saveFile } from '@/utils/stream';
 
 import type {
   createUserSchema,
@@ -21,13 +23,15 @@ import type {
 } from '@naven/common';
 import type { RouteHandlerMethod } from 'fastify';
 
-import type { TypeBoxRouteHandlerMethod } from '@/types';
+import type { TypeBoxRouteHandlerMethod } from '@/types/types.routes';
 
 export const getUsers: TypeBoxRouteHandlerMethod<
   typeof getUsersSchema
 > = async (request, _reply) => {
-  const { createAppUser, prisma } = request.server;
-  const { username } = request.query;
+  const {
+    query: { username },
+    server: { prisma },
+  } = request;
 
   const users = await prisma.user.findMany({
     where: {
@@ -35,23 +39,24 @@ export const getUsers: TypeBoxRouteHandlerMethod<
     },
   });
 
-  return users.map(createAppUser);
+  return users.map(mapUserToAppUser);
 };
 
 export const createUser: TypeBoxRouteHandlerMethod<
   typeof createUserSchema
 > = async (request, reply) => {
-  const { prisma } = request.server;
-  const { username, email, password } = request.body;
+  const {
+    session,
+    body: { username, email, password },
+    server: { prisma },
+  } = request;
 
   const emailUsername = email.split('@')[0];
   const displayName =
     emailUsername.charAt(0).toUpperCase() + emailUsername.slice(1);
-  const hashedPassword = await request.server.hashPassword(password);
+  const hashedPassword = await hashPassword(password);
 
   try {
-    await createProfilePicture(displayName, username);
-
     const user = await prisma.user.create({
       data: {
         username,
@@ -61,9 +66,11 @@ export const createUser: TypeBoxRouteHandlerMethod<
       },
     });
 
-    request.session.userId = user.id;
+    await createProfilePicture(user);
 
-    return reply.status(201).send(request.server.createAppUser(user));
+    session.userId = user.id;
+
+    return reply.status(201).send(mapUserToAppUser(user));
   } catch (err) {
     if (isPrismaError(err) && err.code === PrismaErrorCode.UniqueKeyViolation) {
       return reply.conflict('username or email are already registered');
@@ -78,7 +85,7 @@ export const patchCurrentUser: TypeBoxRouteHandlerMethod<
 > = async (request, _reply) => {
   const {
     user,
-    server: { prisma, createAppUser },
+    server: { prisma },
   } = request;
 
   const newUser = await prisma.user.update({
@@ -88,21 +95,21 @@ export const patchCurrentUser: TypeBoxRouteHandlerMethod<
     data: request.body,
   });
 
-  return createAppUser(newUser);
+  return mapUserToAppUser(newUser);
 };
 
 export const updateCurrentUserProfilePicutre: RouteHandlerMethod = async (
   request,
   reply
 ) => {
+  const { user } = request;
   const profilePicture = await request.file();
-  const user = request.user;
 
   if (!isProfilePictureMimeTypeAllowed(profilePicture.mimetype)) {
     return reply.badRequest('Invalid MIME type');
   }
 
-  await saveFile(profilePicture.file, getProfilePicutrePath(user.username));
+  await saveFile(profilePicture.file, getProfilePicutrePath(user));
 
   return user;
 };
@@ -112,7 +119,7 @@ export const deleteCurrentUserProfilePicture: TypeBoxRouteHandlerMethod<
 > = async (request, reply) => {
   const { user } = request;
 
-  await createProfilePicture(user.displayName, user.username);
+  await createProfilePicture(user);
 
   return reply.status(204).send();
 };
@@ -123,7 +130,7 @@ export const updateCurrentUserEmail: TypeBoxRouteHandlerMethod<
   const {
     user,
     body: { newEmail, password },
-    server: { prisma, createAppUser },
+    server: { prisma },
   } = request;
 
   if (!(await bcrypt.compare(password, user.password))) {
@@ -149,7 +156,7 @@ export const updateCurrentUserEmail: TypeBoxRouteHandlerMethod<
     },
   });
 
-  return createAppUser(newUser);
+  return mapUserToAppUser(newUser);
 };
 
 export const updateCurrentUserPassword: TypeBoxRouteHandlerMethod<
@@ -158,7 +165,7 @@ export const updateCurrentUserPassword: TypeBoxRouteHandlerMethod<
   const {
     user,
     body: { currentPassword, newPassword },
-    server: { prisma, hashPassword },
+    server: { prisma },
   } = request;
 
   if (!(await bcrypt.compare(currentPassword, user.password))) {

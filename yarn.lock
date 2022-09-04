@@ -469,14 +469,6 @@
   resolved "https://registry.npmjs.org/@fastify/deepmerge/-/deepmerge-1.1.0.tgz"
   integrity sha512-E8Hfdvs1bG6u0N4vN5Nty6JONUfTdOciyD5rn8KnEsLKIenvOVcr210BQR9t34PRkNyjqnMLGk3e0BsaxRdL+g==
 
-"@fastify/env@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.npmjs.org/@fastify/env/-/env-4.1.0.tgz"
-  integrity sha512-9l+JTUiFWSwb9dGSeR46aDWBjrAg8lJeqMjbotG5/8Ho90+qzRbt8kdSnVhLm5k6HcqXcBaBAT/6cImRhRq0VQ==
-  dependencies:
-    env-schema "^5.0.0"
-    fastify-plugin "^4.0.0"
-
 "@fastify/error@^3.0.0":
   version "3.0.0"
   resolved "https://registry.npmjs.org/@fastify/error/-/error-3.0.0.tgz"
@@ -2430,15 +2422,10 @@ domutils@^2.8.0:
     domelementtype "^2.2.0"
     domhandler "^4.2.0"
 
-dotenv-expand@^8.0.3:
-  version "8.0.3"
-  resolved "https://registry.npmjs.org/dotenv-expand/-/dotenv-expand-8.0.3.tgz"
-  integrity sha512-SErOMvge0ZUyWd5B0NXMQlDkN+8r+HhVUsxgOO7IoPDOdDRD2JjExpN6y3KnFR66jsJMwSn1pqIivhU5rcJiNg==
-
-dotenv@^16.0.0:
-  version "16.0.1"
-  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.0.1.tgz"
-  integrity sha512-1K6hR6wtk2FviQ4kEiSjFiH5rpzEVi8WW0x96aztHVMhEspNpc4DVOUTEHtEva5VThQ8IaBX1Pe4gSzpVVUsKQ==
+dotenv@^16.0.2:
+  version "16.0.2"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.2.tgz#0b0f8652c016a3858ef795024508cddc4bffc5bf"
+  integrity sha512-JvpYKUmzQhYoIFgK2MOnF3bciIZoItIIoryihy0rIA+H4Jy0FmgyKYAHCTN98P5ybGSJcIFbh6QKeJdtZd1qhA==
 
 duplexer2@^0.1.2:
   version "0.1.4"
@@ -2493,15 +2480,6 @@ entities@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/entities/-/entities-3.0.1.tgz"
   integrity sha512-WiyBqoomrwMdFG1e0kqvASYfnlb0lp8M5o5Fw2OFq1hNZxxcNk8Ik0Xm7LxzBhuidnZB/UtBqVCgUz3kBOP51Q==
-
-env-schema@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/env-schema/-/env-schema-5.0.0.tgz"
-  integrity sha512-91u95Nlny+LmjF3Mk96j8k6k+GOXcFEdMUv3bWQjtM2l+KTAdW6qITiv8kHYO8vCaCScXpJTDyd1AFnCQTnYaQ==
-  dependencies:
-    ajv "^8.0.0"
-    dotenv "^16.0.0"
-    dotenv-expand "^8.0.3"
 
 error-ex@^1.3.1:
   version "1.3.2"

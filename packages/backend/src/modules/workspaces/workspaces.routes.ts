@@ -2,11 +2,13 @@ import { createWorkspaceSchema, getWorkspacesSchema } from '@naven/common';
 
 import { createWorkspace, getWorkspaces } from './workspaces.handlers';
 
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import type { FastifyPluginCallbackTypebox } from '@fastify/type-provider-typebox';
 
-const workspacesRoutes: FastifyPluginAsyncTypebox = async fastify => {
-  await fastify.register(import('./workspaces.decorators.local'));
-
+const workspacesRoutes: FastifyPluginCallbackTypebox = (
+  fastify,
+  _options,
+  done
+) => {
   fastify.get(
     '/',
     {
@@ -21,6 +23,8 @@ const workspacesRoutes: FastifyPluginAsyncTypebox = async fastify => {
     { schema: createWorkspaceSchema, preHandler: fastify.auth },
     createWorkspace
   );
+
+  done();
 };
 
 export default workspacesRoutes;

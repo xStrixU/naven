@@ -1,17 +1,17 @@
+import { mapPrismaWorkspaceToWorkspace } from './workspaces.mapper';
+
 import type { createWorkspaceSchema, getWorkspacesSchema } from '@naven/common';
 
-import type { TypeBoxRouteHandlerMethod } from '@/types';
+import type { TypeBoxRouteHandlerMethod } from '@/types/types.routes';
 
 export const getWorkspaces: TypeBoxRouteHandlerMethod<
   typeof getWorkspacesSchema
-> = async (request, _reply) => {
-  const { user, server } = request;
+> = (request, _reply) => {
+  const { user } = request;
 
   const workspaces = user.workspaces.map(({ workspace }) => workspace);
 
-  return Promise.all(
-    workspaces.map(workspace => server.mapPrismaWorkspaceToWorkspace(workspace))
-  );
+  return Promise.all(workspaces.map(mapPrismaWorkspaceToWorkspace));
 };
 
 export const createWorkspace: TypeBoxRouteHandlerMethod<
@@ -20,7 +20,6 @@ export const createWorkspace: TypeBoxRouteHandlerMethod<
   const {
     user,
     body: { name },
-    server,
     server: { prisma },
   } = request;
 
@@ -44,7 +43,5 @@ export const createWorkspace: TypeBoxRouteHandlerMethod<
     },
   });
 
-  return reply
-    .status(201)
-    .send(await server.mapPrismaWorkspaceToWorkspace(workspace));
+  return reply.status(201).send(await mapPrismaWorkspaceToWorkspace(workspace));
 };

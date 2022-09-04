@@ -1,22 +1,17 @@
-import ajvErrors from 'ajv-errors';
+import dotenv from 'dotenv';
 
+import { getEnv } from './lib/env';
 import { createServer } from './server';
 
+dotenv.config();
+
 const start = async () => {
-  const fastify = await createServer({
-    ajv: {
-      customOptions: {
-        allErrors: true,
-      },
-      plugins: [ajvErrors],
-    },
-    logger: true,
-  });
+  const fastify = await createServer();
 
   try {
     await fastify.listen({
-      host: fastify.config.HOST,
-      port: fastify.config.PORT,
+      host: getEnv('HOST'),
+      port: parseInt(getEnv('PORT')),
     });
   } catch (err) {
     fastify.log.error(err);

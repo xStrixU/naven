@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 
+import { mapUserToAppUser } from '../users/users.mapper';
 import { SESSION_COOKIE_NAME } from './sessions.constans';
 
 import type {
@@ -8,14 +9,18 @@ import type {
   getCurrentSessionSchema,
 } from '@naven/common';
 
-import type { TypeBoxRouteHandlerMethod } from '@/types';
+import type { TypeBoxRouteHandlerMethod } from '@/types/types.routes';
 
 export const createSession: TypeBoxRouteHandlerMethod<
   typeof createSessionSchema
 > = async (request, reply) => {
-  const { login, password } = request.body;
+  const {
+    session,
+    body: { login, password },
+    server: { prisma },
+  } = request;
 
-  const user = await request.server.prisma.user.findFirst({
+  const user = await prisma.user.findFirst({
     where: {
       OR: [{ username: login }, { email: login }],
     },
@@ -25,9 +30,9 @@ export const createSession: TypeBoxRouteHandlerMethod<
     return reply.unauthorized('Invalid username, email or password');
   }
 
-  request.session.userId = user.id;
+  session.userId = user.id;
 
-  return reply.status(201).send(request.server.createAppUser(user));
+  return reply.status(201).send(mapUserToAppUser(user));
 };
 
 export const getCurrentSession: TypeBoxRouteHandlerMethod<

@@ -1,6 +1,8 @@
 import fp from 'fastify-plugin';
 
-import type { AppUser } from '../users/users.types';
+import { mapUserToAppUser } from '../users/users.mapper';
+
+import type { AppUser } from '../users/users.mapper';
 import type { User, Workspace, WorkspacesUsers } from '@prisma/client';
 import type {
   FastifyPluginCallback,
@@ -29,7 +31,7 @@ declare module 'fastify' {
 const auth = async (request: FastifyRequest, reply: FastifyReply) => {
   const {
     session: { userId },
-    server: { prisma, createAppUser },
+    server: { prisma },
   } = request;
 
   if (!userId) {
@@ -52,10 +54,11 @@ const auth = async (request: FastifyRequest, reply: FastifyReply) => {
     return reply.internalServerError();
   }
 
-  request.user = createAppUser(user);
+  request.user = mapUserToAppUser(user);
 };
 
 const sessionsDecorators: FastifyPluginCallback = (fastify, _options, done) => {
+  fastify.decorateRequest('user', null);
   fastify.decorate('auth', auth);
 
   done();
